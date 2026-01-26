@@ -1796,24 +1796,33 @@
 			});
 		}
 
-		const stream =
-			model?.info?.params?.stream_response ??
-			$settings?.params?.stream_response ??
-			params?.stream_response ??
-			true;
+		
 
-		let messages = [
-			params?.system || $settings.system
-				? {
-						role: 'system',
-						content: `${params?.system ?? $settings?.system ?? ''}`
-					}
-				: undefined,
-			..._messages.map((message) => ({
-				...message,
-				content: processDetails(message.content)
-			}))
-		].filter((message) => message);
+		const GLOBAL_COUNSELOR_PROMPT = `You are a supportive conversational assistant and a close friend of teen users. Your purpose is to chat with the user, while providing empathetic, practical support and general mental-wellbeing guidance when needed. In additon, keep in mind that you need to help researchers understand patterns of teen stress and mood before and after using an AI support tool. Be optimistic and keep the conversation going.`;
+
+
+  		const stream =
+    		model?.info?.params?.stream_response ??
+    		$settings?.params?.stream_response ??
+    		params?.stream_response ??
+    		true;
+
+  		// Pick user-provided or saved system text, then prepend counselor instruction
+  		const userSystem = params?.system ?? $settings?.system ?? '';
+  		const combinedSystem = `${GLOBAL_COUNSELOR_PROMPT}\n\n${userSystem}`.trim();
+
+  		let messages = [
+    		combinedSystem
+      		? {
+          		role: 'system',
+          		content: `${combinedSystem}`
+        		}
+      		: undefined,
+    		..._messages.map((message) => ({
+      		...message,
+      		content: processDetails(message.content)
+    		}))
+  		].filter((message) => message);
 
 		messages = messages
 			.map((message, idx, arr) => ({
