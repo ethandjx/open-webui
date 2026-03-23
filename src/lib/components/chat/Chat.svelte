@@ -1800,7 +1800,18 @@
 
 		
 
-		const GLOBAL_COUNSELOR_PROMPT = `Etwas`;
+		// In Chat.svelte, before the prompt is used
+		let GLOBAL_COUNSELOR_PROMPT = '';
+
+		onMount(async () => {
+  		try {
+    		const response = await fetch('/prompts/prompt-text.txt');
+    		GLOBAL_COUNSELOR_PROMPT = await response.text();
+  		} catch (error) {
+    		console.error('Failed to load counselor prompt:', error);
+    		GLOBAL_COUNSELOR_PROMPT = 'Etwas'; // fallback
+  		}
+		});
 
   		const stream =
     		model?.info?.params?.stream_response ??
