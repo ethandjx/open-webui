@@ -1801,7 +1801,6 @@
 		
 
 		const GLOBAL_COUNSELOR_PROMPT = `Etwas`;
-`
 
   		const stream =
     		model?.info?.params?.stream_response ??
